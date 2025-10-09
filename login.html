@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="front.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Inicio de Sesión</h1>
+        <form id="loginForm">
+            <label for="loginUsuario">Nombre de usuario:</label>
+            <input type="text" id="loginUsuario" required>
+            <label for="loginPassword">Contraseña:</label>
+            <input type="password" id="loginPassword" required>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <div id="loginStatus" class="resultado"></div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const usuario = document.getElementById('loginUsuario').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const status = document.getElementById('loginStatus');
+            if (!usuario || !password) {
+                status.textContent = 'Ingresa usuario y contraseña para iniciar sesión';
+                return;
+            }
+            // Aquí puedes guardar el usuario en localStorage para usarlo en front.html
+            localStorage.setItem('trabajadorActivo', usuario);
+            status.textContent = `Sesión iniciada: ${usuario}`;
+            setTimeout(() => {
+                window.location.href = 'front.html';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

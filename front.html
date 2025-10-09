@@ -1,0 +1,44 @@
+<html>
+<head>
+	<link rel="stylesheet" href="front.css">
+	<title>Registro de Venta</title>
+</head>
+<body>
+	<div class="login-bar">
+		<span id="usuarioSesion"></span>
+		<button id="goLoginBtn">Iniciar sesión</button>
+		<button id="logoutBtn" style="display:none;">Cerrar sesión</button>
+	</div>
+	<div class="container">
+		<h1>Registro de Venta</h1>
+		<form id="ventaForm">
+			<label for="cliente">Cliente:</label>
+			<input type="text" id="cliente" name="cliente" required>
+
+			<div class="carrito-section">
+				<div class="carrito-form">
+					<label for="producto">Producto:</label>
+					<select id="producto" name="producto"></select>
+
+					<label for="cantidad">Cantidad:</label>
+					<input type="number" id="cantidad" name="cantidad" min="1">
+					<button type="button" id="agregarCarritoBtn" class="btn">Agregar al carrito</button>
+				</div>
+				<div>
+					<h3>Carrito</h3>
+					<ul id="carritoLista"></ul>
+				</div>
+			</div>
+
+			<label for="empleado">Empleado:</label>
+			<select id="empleado" name="empleado" required disabled>
+				<option value="">Inicia sesión para seleccionar</option>
+			</select>
+
+			<button type="submit">Registrar Venta</button>
+		</form>
+		<div id="resultadoVenta" class="resultado"></div>
+	</div>
+	<script src="front.js"></script>
+</body>
+</html>

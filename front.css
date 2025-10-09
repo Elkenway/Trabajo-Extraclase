@@ -1,0 +1,186 @@
+.carrito-section {
+	margin-bottom: 16px;
+	background: #f9f9f9;
+	border-radius: 6px;
+	padding: 12px 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.carrito-form {
+	display: grid;
+	grid-template-columns: 1fr 1fr auto;
+	gap: 10px 12px;
+	align-items: end;
+	margin-bottom: 10px;
+	padding: 0;
+}
+#carritoLista {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.carrito-form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 10px;
+	padding: 0;
+	align-items: center;
+	justify-content: center;
+}
+.btn {
+	position: relative;
+	font-size: 17px;
+	text-transform: uppercase;
+	text-decoration: none;
+	padding: 1em 2.5em;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 6em;
+	transition: all 0.2s;
+	border: none;
+	font-family: inherit;
+	font-weight: 500;
+	color: black;
+	background-color: white;
+}
+.btn:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.btn:active {
+	transform: translateY(-1px);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.btn::after {
+	content: "";
+	display: inline-block;
+	height: 100%;
+	width: 100%;
+	border-radius: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	transition: all 0.4s;
+	background-color: #fff;
+}
+.btn:hover::after {
+	transform: scaleX(1.4) scaleY(1.6);
+	opacity: 0;
+}
+#carritoLista li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	margin-bottom: 6px;
+	padding: 6px 10px;
+	font-size: 1em;
+}
+.quitar-btn {
+	background: hsl(261deg 80% 48%);
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	padding: 4px 10px;
+	font-size: 0.95em;
+	cursor: pointer;
+	margin-left: 10px;
+	transition: background 0.2s;
+}
+.quitar-btn:hover {
+	background: hsl(261deg 80% 48%);
+}
+/* Login bar */
+.login-bar {
+	position: absolute;
+	top: 20px;
+	right: 30px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.login-bar form {
+	display: flex;
+	gap: 5px;
+}
+#loginStatus {
+	font-weight: bold;
+	color: #007bff;
+	margin-left: 10px;
+}
+body {
+	font-family: Arial, sans-serif;
+	background: #f4f4f4;
+	margin: 0;
+	padding: 0;
+}
+.container {
+	background: #fff;
+	max-width: 400px;
+	margin: 40px auto;
+	padding: 30px 25px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+h1 {
+	text-align: center;
+	color: #333;
+}
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+label {
+	font-weight: bold;
+	margin-bottom: 2px;
+}
+input, select, button {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 1em;
+}
+/* From Uiverse.io by barisdogansutcu */ 
+button {
+  padding: 17px 40px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
+}
+
+button:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+}
+
+button:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+}
+
+.resultado {
+	margin-top: 20px;
+	padding: 12px;
+	background: #e6ffe6;
+	border: 1px solid #b2ffb2;
+	border-radius: 4px;
+	color: #222;
+	font-size: 1em;
+}
