@@ -15,23 +15,36 @@
         </form>
         <div id="loginStatus" class="resultado"></div>
     </div>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const usuario = document.getElementById('loginUsuario').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const status = document.getElementById('loginStatus');
-            if (!usuario || !password) {
-                status.textContent = 'Ingresa usuario y contraseña para iniciar sesión';
-                return;
-            }
-            // Aquí puedes guardar el usuario en localStorage para usarlo en front.html
-            localStorage.setItem('trabajadorActivo', usuario);
-            status.textContent = `Sesión iniciada: ${usuario}`;
-            setTimeout(() => {
-                window.location.href = 'front.html';
-            }, 1000);
-        });
-    </script>
+        <script>
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const usuario = document.getElementById('loginUsuario').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const status = document.getElementById('loginStatus');
+                if (!usuario || !password) {
+                    status.textContent = 'Ingresa usuario y contraseña para iniciar sesión';
+                    return;
+                }
+                try {
+                    const resp = await fetch('http://localhost:3000/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ usuario, password })
+                    });
+                    const data = await resp.json();
+                    if (resp.ok && data.success) {
+                        localStorage.setItem('trabajadorActivo', data.empleado.usuario);
+                        status.textContent = `Sesión iniciada: ${data.empleado.nombre}`;
+                        setTimeout(() => {
+                            window.location.href = 'front.html';
+                        }, 1000);
+                    } else {
+                        status.textContent = data.message || 'Usuario o contraseña incorrectos';
+                    }
+                } catch (err) {
+                    status.textContent = 'Error de conexión con el servidor.';
+                }
+            });
+        </script>
 </body>
 </html>
