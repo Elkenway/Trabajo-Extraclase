@@ -2,14 +2,29 @@ let productos = [];
 let carrito = [];
 let trabajadorActivo = null;
 
+// unciones del loader
+
+function mostrarLoader() {
+  const loader = document.getElementById('loader');
+  if (loader) loader.style.display = 'flex';
+}
+
+function ocultarLoader() {
+  const loader = document.getElementById('loader');
+  if (loader) loader.style.display = 'none';
+}
+
 // Inicialización de la aplicación
+
+window.onload = inicializarApp;
+
 async function inicializarApp() {
-	trabajadorActivo = localStorage.getItem('trabajadorActivo');
+	trabajadorActivo = sessionStorage.getItem('trabajadorActivo');
 	const usuarioSesion = document.getElementById('usuarioSesion');
 	const logoutBtn = document.getElementById('logoutBtn');
 	const goLoginBtn = document.getElementById('goLoginBtn');
 
-	// Mostrar sesión actual
+	// Mostrar sesión actual 
 	if (trabajadorActivo && usuarioSesion) {
 		usuarioSesion.textContent = `Sesión: ${trabajadorActivo}`;
 		logoutBtn.style.display = 'inline-block';
@@ -33,6 +48,7 @@ async function inicializarApp() {
 
 	// Cargar productos desde el backend Node.js
 	try {
+		mostrarLoader();
 		const resp = await fetch('http://localhost:3000/api/productos');
 		if (!resp.ok) throw new Error(`Error HTTP ${resp.status}`);
 		productos = await resp.json();
@@ -41,6 +57,8 @@ async function inicializarApp() {
 		console.error('Error cargando productos:', e);
 		alert('No se pudo cargar el inventario de productos desde el servidor.');
 		productos = [];
+	} finally {
+		ocultarLoader();
 	}
 
 	// Rellenar el selector de productos
@@ -56,7 +74,7 @@ async function inicializarApp() {
 	// Botones de sesión
 	goLoginBtn.addEventListener('click', () => window.location.href = 'login.html');
 	logoutBtn.addEventListener('click', () => {
-		localStorage.removeItem('trabajadorActivo');
+		sessionStorage.removeItem('trabajadorActivo');
 		window.location.reload();
 	});
 
@@ -66,9 +84,8 @@ async function inicializarApp() {
 	renderCarrito();
 }
 
-window.onload = inicializarApp;
-
 // Función para agregar productos al carrito
+
 function agregarAlCarrito() {
 	const prodSel = document.getElementById('producto');
 	const cantidadInput = document.getElementById('cantidad');
@@ -101,34 +118,66 @@ function agregarAlCarrito() {
 }
 
 // Mostrar carrito visualmente
+
 function renderCarrito() {
 	const lista = document.getElementById('carritoLista');
+	const totalDiv = document.getElementById('totalCarrito');
+	if (!lista) return; 
 	lista.innerHTML = '';
+
+	let total = 0;
 
 	carrito.forEach((item, i) => {
 		const li = document.createElement('li');
-		li.textContent = `${item.nombre} (x${item.cantidad}) - $${item.precio * item.cantidad}`;
+		const subtotal = item.precio * item.cantidad;
+		total += subtotal;
+
+		// Construir contenido con subtotal formateado
+		li.innerHTML = `${item.nombre} (x${item.cantidad}) - $${subtotal.toLocaleString()}`;
+
 		const btn = document.createElement('button');
-		btn.textContent = '❌';
+		btn.textContent = 'X';
 		btn.onclick = () => {
 			carrito.splice(i, 1);
 			renderCarrito();
 		};
+
 		li.appendChild(btn);
 		lista.appendChild(li);
 	});
+
+	if (totalDiv) {
+		totalDiv.textContent = carrito.length > 0 ? ` Total: $${total.toLocaleString()}` : '';
+	}
 }
 
-// Registrar venta con backend
+// Registrar venta con backend (corregido, sin duplicados)
+
 document.getElementById('ventaForm').addEventListener('submit', async function(e) {
 	e.preventDefault();
+	mostrarLoader();
+
 	const cliente = document.getElementById('cliente').value.trim();
 	const empleado = document.getElementById('empleado').value;
 	const resultadoDiv = document.getElementById('resultadoVenta');
 
-	if (!trabajadorActivo) return resultadoDiv.textContent = 'Debes iniciar sesión.';
-	if (!cliente) return resultadoDiv.textContent = 'Debe ingresar el nombre del cliente.';
-	if (carrito.length === 0) return resultadoDiv.textContent = 'Agrega al menos un producto.';
+	if (!trabajadorActivo) {
+		resultadoDiv.textContent = 'Debes iniciar sesión para registrar una venta.';
+		ocultarLoader();
+		return;
+	}
+
+	if (!cliente) {
+		resultadoDiv.textContent = 'Debe ingresar el nombre del cliente.';
+		ocultarLoader();
+		return;
+	}
+
+	if (carrito.length === 0) {
+		resultadoDiv.textContent = 'Agrega al menos un producto.';
+		ocultarLoader();
+		return;
+	}
 
 	const venta = { cliente, empleado, productos: carrito };
 
@@ -140,20 +189,31 @@ document.getElementById('ventaForm').addEventListener('submit', async function(e
 		});
 
 		const data = await resp.json();
+
 		if (resp.ok && data.success) {
+			// Calcular total de la venta
+			const totalVenta = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+
 			resultadoDiv.innerHTML = `
 				<strong>${data.message}</strong><br>
 				Cliente: ${cliente}<br>
 				Empleado: ${empleado}<br>
-				Productos:<ul>${venta.productos.map(p => `<li>${p.nombre} (x${p.cantidad})</li>`).join('')}</ul>
+				Productos:<ul>
+					${venta.productos.map(p => `<li>${p.nombre} (x${p.cantidad}) - $${(p.precio * p.cantidad).toLocaleString()}</li>`).join('')}
+				</ul>
+				<hr>
+				<h3>Total de la venta:  $${totalVenta.toLocaleString()}</h3>
 			`;
+
+			// Limpiar carrito y formulario
 			carrito = [];
 			renderCarrito();
 			this.reset();
 
-			// Recargar productos (para actualizar stock)
+			// Actualizar productos desde backend
 			const respProd = await fetch('http://localhost:3000/api/productos');
 			productos = await respProd.json();
+
 			const prodSel = document.getElementById('producto');
 			prodSel.innerHTML = '';
 			productos.forEach((p, i) => {
@@ -168,7 +228,7 @@ document.getElementById('ventaForm').addEventListener('submit', async function(e
 	} catch (err) {
 		console.error(err);
 		resultadoDiv.textContent = 'Error de conexión con el servidor.';
+	} finally {
+		ocultarLoader();
 	}
 });
-
-

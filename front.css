@@ -145,7 +145,7 @@ input, select, button {
 	border-radius: 4px;
 	font-size: 1em;
 }
-/* From Uiverse.io by barisdogansutcu */ 
+
 button {
   padding: 17px 40px;
   border-radius: 50px;
@@ -183,4 +183,56 @@ button:active {
 	border-radius: 4px;
 	color: #222;
 	font-size: 1em;
+}
+
+/* Overlay del loader */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Loader dots */
+.dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dot {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #b3d4fc;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dot:nth-child(1) { animation-delay: -0.3s; }
+.dot:nth-child(2) { animation-delay: -0.1s; }
+.dot:nth-child(3) { animation-delay: 0.1s; }
+.dot:nth-child(4) { animation-delay: 0.3s; }
+.dot:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: #6793fb;
+    box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+  }
+  100% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
 }

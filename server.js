@@ -18,9 +18,7 @@ const pool = new Pool({
   port: 5432
 });
 
-// =======================
 // LOGIN
-// =======================
 app.post('/api/login', async (req, res) => {
   const { usuario, password } = req.body;
 
@@ -54,9 +52,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// =======================
 // PRODUCTOS
-// =======================
 app.get('/api/productos', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, nombre, precio, stock FROM productos');
@@ -67,9 +63,7 @@ app.get('/api/productos', async (req, res) => {
   }
 });
 
-// =======================
-// REGISTRAR VENTA + ACTUALIZAR STOCK
-// =======================
+// REGISTRAR VENTA y ACTUALIZAR STOCK
 app.post('/api/venta', async (req, res) => {
   const { cliente, empleado, productos } = req.body;
 
@@ -109,9 +103,7 @@ app.post('/api/venta', async (req, res) => {
   }
 });
 
-// =======================
 // SERVIDOR
-// =======================
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
 });
