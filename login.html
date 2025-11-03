@@ -37,7 +37,7 @@
                 const data = await resp.json();
 
                 if (resp.ok && data.success) {
-                    // 🔹 Guardar sesión temporal
+                    //Guardar sesión temporal
                     sessionStorage.setItem('trabajadorActivo', data.empleado.usuario);
                     status.textContent = `Sesión iniciada como: ${data.empleado.nombre}`;
                     setTimeout(() => {

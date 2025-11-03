@@ -2,7 +2,7 @@ let productos = [];
 let carrito = [];
 let trabajadorActivo = null;
 
-// unciones del loader
+// funciones del loader
 
 function mostrarLoader() {
   const loader = document.getElementById('loader');
@@ -89,16 +89,19 @@ async function inicializarApp() {
 function agregarAlCarrito() {
 	const prodSel = document.getElementById('producto');
 	const cantidadInput = document.getElementById('cantidad');
+	const mensajeDiv = document.getElementById('mensaje carrito');
+	mensajeDiv.textContent = ''; // Para limpiar los mensajes previos
 	const index = parseInt(prodSel.value);
 	const cantidad = parseInt(cantidadInput.value);
 
-	if (isNaN(index) || index < 0) return alert('Seleccione un producto válido.');
-	if (!cantidad || cantidad <= 0) return alert('Ingrese una cantidad válida.');
+	if (isNaN(index) || index < 0) return alert('Seleccione un producto válido');
+	if (!cantidad || cantidad <= 0) return alert('Ingrese una cantidad válida');
 
 	const producto = productos[index];
 
 	if (cantidad > producto.stock) {
-		return alert(`No hay suficiente stock de ${producto.nombre}.`);
+		mensajeDiv.textContent = `Cantidad excede el stock disponible (${producto.stock}).`;
+		return;
 	}
 
 	const itemExistente = carrito.find(item => item.id === producto.id);
@@ -115,6 +118,8 @@ function agregarAlCarrito() {
 
 	renderCarrito();
 	cantidadInput.value = '';
+	mensajeDiv.textContent = 'Producto agregado al carrito.';
+	mensajeDiv.style.color = 'green';
 }
 
 // Mostrar carrito visualmente
