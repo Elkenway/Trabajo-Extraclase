@@ -87,43 +87,93 @@ async function inicializarApp() {
 // Función para agregar productos al carrito
 
 function agregarAlCarrito() {
-	const prodSel = document.getElementById('producto');
-	const cantidadInput = document.getElementById('cantidad');
-	const mensajeDiv = document.getElementById('mensaje carrito');
-	mensajeDiv.textContent = ''; // Para limpiar los mensajes previos
-	const index = parseInt(prodSel.value);
-	const cantidad = parseInt(cantidadInput.value);
+  const prodSel = document.getElementById('producto');
+  const cantidadInput = document.getElementById('cantidad');
+  const mensajeDiv = document.getElementById('mensajeCarrito');
 
-	const producto = productos[index];
+  if (mensajeDiv) {
+    mensajeDiv.textContent = '';
+  }
 
-	if (cantidad > producto.stock) {
-		mensajeDiv.textContent = `Cantidad excede el stock disponible (${producto.stock}).`;
-		return;
-	}
+  const rawIndex = prodSel?.value;
+  const rawCantidad = cantidadInput?.value;
 
-	if (isNaN(index) || index <= 0) {
-		mensajeCarrito.textContent = 'Seleccione una cantidad de producto válido.';
-		mensajeCarrito.style.color = 'red';
-		return;
-	}
+  if (rawIndex === undefined || rawIndex === null || rawIndex === '') {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = 'Seleccione un producto válido.';
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
 
-	const itemExistente = carrito.find(item => item.id === producto.id);
-	if (itemExistente) {
-		itemExistente.cantidad += cantidad;
-	} else {
-		carrito.push({
-			id: producto.id,
-			nombre: producto.nombre,
-			precio: producto.precio,
-			cantidad
-		});
-	}
+  const index = Number(rawIndex);
+  const cantidad = Number(rawCantidad);
 
-	renderCarrito();
-	cantidadInput.value = '';
-	mensajeDiv.textContent = 'Producto agregado al carrito.';
-	mensajeDiv.style.color = 'green';
+  if (!Number.isInteger(index) || index < 0 || index >= productos.length) {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = 'Seleccione un producto válido.';
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
+
+  // validar cantidad
+  if (rawCantidad === null || rawCantidad === undefined || rawCantidad.toString().trim() === '') {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = 'Ingrese una cantidad válida.';
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
+  if (!Number.isFinite(cantidad) || !Number.isInteger(cantidad) || cantidad <= 0) {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = 'Ingrese una cantidad válida.';
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
+
+  const producto = productos[index];
+  if (!producto) {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = 'Producto no encontrado.';
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
+
+  // validar stock
+  if (cantidad > producto.stock) {
+    if (mensajeDiv) {
+      mensajeDiv.textContent = `No hay suficiente stock de ${producto.nombre} (disponibles: ${producto.stock}).`;
+      mensajeDiv.style.color = 'red';
+    }
+    return;
+  }
+
+  // agregar o actualizar en carrito
+  const itemExistente = carrito.find(item => item.id === producto.id);
+  if (itemExistente) {
+    itemExistente.cantidad += cantidad;
+  } else {
+    carrito.push({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      cantidad
+    });
+  }
+
+  renderCarrito();
+  cantidadInput.value = ''; 
+
+  if (mensajeDiv) {
+    mensajeDiv.textContent = ` ${producto.nombre} agregado correctamente al carrito.`;
+    mensajeDiv.style.color = 'green';
+    setTimeout(() => { mensajeDiv.textContent = ''; }, 2500);
+  }
 }
+
 
 // Mostrar carrito visualmente
 
