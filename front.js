@@ -1,6 +1,6 @@
 let productos = [];
 let carrito = [];
-let trabajadorActivo = null;
+let trabajadorActivo = {};
 
 // funciones del loader
 
@@ -94,13 +94,16 @@ function agregarAlCarrito() {
 	const index = parseInt(prodSel.value);
 	const cantidad = parseInt(cantidadInput.value);
 
-	if (isNaN(index) || index < 0) return alert('Seleccione un producto válido');
-	if (!cantidad || cantidad <= 0) return alert('Ingrese una cantidad válida');
-
 	const producto = productos[index];
 
 	if (cantidad > producto.stock) {
 		mensajeDiv.textContent = `Cantidad excede el stock disponible (${producto.stock}).`;
+		return;
+	}
+
+	if (isNaN(index) || index <= 0) {
+		mensajeCarrito.textContent = 'Seleccione una cantidad de producto válido.';
+		mensajeCarrito.style.color = 'red';
 		return;
 	}
 
@@ -156,7 +159,7 @@ function renderCarrito() {
 	}
 }
 
-// Registrar venta con backend (corregido, sin duplicados)
+// Registrar venta con backend 
 
 document.getElementById('ventaForm').addEventListener('submit', async function(e) {
 	e.preventDefault();
